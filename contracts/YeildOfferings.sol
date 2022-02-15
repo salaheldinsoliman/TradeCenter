@@ -103,12 +103,7 @@ function addOffering(
 }
 
 
-function getOfferings() public returns (mapping (uint => offering) calldata){
 
-return Offerings;
-
-
-}
 
 /////// BUY BACK PART /////////
 // how will we know the agreed on price?

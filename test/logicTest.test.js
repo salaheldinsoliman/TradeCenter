@@ -1,4 +1,4 @@
-const { assert } = require("chai")
+/*const { assert } = require("chai")
 const chai= require ("chai");
 
 chai .use (require("chai-as-promised"))
@@ -46,5 +46,5 @@ console.log(getOffer)
 })
 
 
-})
+})*/
 
