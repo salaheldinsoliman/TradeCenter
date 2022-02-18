@@ -4,12 +4,20 @@ contract YieldOfferings {
    
 address public owner = msg.sender; // contract owner
  // will be used in logic
-uint offeringCount=0; // keep track of all number
+uint offeringCount = 0; // keep track of all number
 uint contractCount=0;
 uint walletCount=0;
-uint[] IDList; // all ids list
+uint[] public offeringIDList; // all ids list
 address[] walletOwners;
-uint price= 2000;
+string aloo = "Bought!";
+
+//mapping (address=> bool) public hasWallet;
+
+//hasWallet[key] 
+
+
+
+uint price= 2400;
 uint ethusdt0= 2300;
 
 mapping (uint => offering) public Offerings; //mapping offerings to ids
@@ -23,16 +31,19 @@ uint eth;
 
 struct buyer {
     address buyerAddress;
+
     offering[] offerings;
     uint[] ContractsIds;
+    uint[] offeringIDList;
 }
 
 struct issuer {
     address issuerAddress;
-    uint256 balance;
+    //uint256 balance;
     uint256 accountPayable;
     offering[] offerings;
     uint[] ContractsIds;
+    bool hasWallet;
 }
 
 struct offeringContract{
@@ -55,10 +66,12 @@ struct offering{
     uint Upoutbarrier;
     uint di_barrier;
     bool Di_barrier_activated;
+    uint[] contractList;
 }
 
 
-
+event logAddedOffering(uint, string, address);
+event getContract (address,address,uint,uint,uint);
 // function to add a new offering 
 function addOffering(
     string memory _name,
@@ -67,14 +80,17 @@ function addOffering(
     uint _high_coupon_barrier,
     uint _smaller_coupon,
     uint _Upoutbarrier,
-    uint _di_barrier) public{
+    uint _di_barrier
+    
+   ) public{
     
     require(bytes(_name).length>0, "name cannot beval empty");
 
     uint newID= offeringCount + 1;
-    
+    //offeringContract[] storage emptyList;
     //newCampaign.deadline= block.timestamp + (_duration * 1 days);
-    IDList.push(newID);
+    offeringIDList.push(newID);
+    uint[] memory contractList;
     Offerings[newID] = offering(msg.sender, 
      newID, 
      _name,
@@ -85,7 +101,8 @@ function addOffering(
      _smaller_coupon,
      _Upoutbarrier,
      _di_barrier,
-      false);
+      false,
+    contractList);
     
     offeringCount+= 1;
 
@@ -100,11 +117,12 @@ function addOffering(
         wallets[msg.sender]= wallet(0,0);
         walletCount +=1;
     }
+
+    emit logAddedOffering(Offerings[newID].ID, Offerings[newID].name, Offerings[newID].issuer);
 }
 
 
-
-
+    
 /////// BUY BACK PART /////////
 // how will we know the agreed on price?
 // how will the issuer fail to pay a coupon?
@@ -165,7 +183,17 @@ function checkPayables(uint256 id) public returns(uint){
 
 }
 
-function buyOffering(uint _id) public payable {
+function buyOffering(uint _id) public payable returns(string memory) {
+
+/*struct offeringContract{
+    address buyer;
+    address issuer;
+    uint amount;
+    uint offeringID;
+    uint contractID;
+}*/
+
+
 
 ContractMap[contractCount] = offeringContract(
     msg.sender,
@@ -174,7 +202,15 @@ ContractMap[contractCount] = offeringContract(
     _id,
     contractCount
 );
+Offerings[_id]. contractList . push(contractCount);
 contractCount+=1;
+
+
+emit getContract(ContractMap[contractCount].buyer,ContractMap[contractCount].issuer,ContractMap[contractCount].amount,ContractMap[contractCount].offeringID,ContractMap[contractCount].contractID);
+//Offerings[_id]. contractList . append()
+
+return aloo;
+
 }
 
 function checkCustody(address _issuer, uint tbs) public returns(bool){
@@ -184,9 +220,18 @@ function checkCustody(address _issuer, uint tbs) public returns(bool){
 
 }
 
+function getCount() public view returns(uint count) {
+    return offeringIDList.length;
+}
+
+function getContractCount() public view returns (uint count){
+
+return contractCount;
+
+}
+
 
 // contract's brace
 }
-
 
 
