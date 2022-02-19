@@ -40,11 +40,16 @@ struct buyer {
 struct issuer {
     address issuerAddress;
     //uint256 balance;
-    uint256 accountPayable;
-    offering[] offerings;
-    uint[] ContractsIds;
-    bool hasWallet;
+    //uint256 accountPayable;
+    uint[] offeringsList;
+    //uint[] ContractsIds;
+    //bool hasWallet;
 }
+
+mapping (address => issuer) public BuyersMap;
+mapping (address => issuer) internal IssuersMap;
+
+
 
 struct offeringContract{
     address buyer;
@@ -70,9 +75,31 @@ struct offering{
 }
 
 
-event logAddedOffering(uint, string, address);
-event getContract (address,address,uint,uint,uint);
+event logAddedOffering(offering);
+event getContract (offeringContract);
+event getIssuer (issuer);
 // function to add a new offering 
+
+function SignInIssuer () public  {
+require(IssuersMap[msg.sender].issuerAddress==0x0000000000000000000000000000000000000000, "Already Signed in as Issuer!" );
+/*struct issuer {
+    address issuerAddress;
+    offering[] offerings;
+    uint[] ContractsIds;
+}*/
+uint[] memory offeringEmptyList;
+IssuersMap[msg.sender] = issuer(
+msg.sender,
+offeringEmptyList
+);
+
+
+emit getIssuer(IssuersMap[msg.sender]);
+
+}
+
+
+
 function addOffering(
     string memory _name,
     uint _Nb_fixings,
@@ -83,8 +110,9 @@ function addOffering(
     uint _di_barrier
     
    ) public{
-    
+    require(IssuersMap[msg.sender].issuerAddress==msg.sender, "Please Sign In" );
     require(bytes(_name).length>0, "name cannot beval empty");
+    //require(IssuersMap[msg.sender].issuerAddress, msg.sender);
 
     uint newID= offeringCount + 1;
     //offeringContract[] storage emptyList;
@@ -106,7 +134,7 @@ function addOffering(
     
     offeringCount+= 1;
 
-    bool ownsWallet= false;
+    /*bool ownsWallet= false;
     for (uint i=0; i< walletOwners.length; i++){
         if (walletOwners[i] == msg.sender)
         ownsWallet= true;
@@ -116,9 +144,10 @@ function addOffering(
     if (ownsWallet== false){
         wallets[msg.sender]= wallet(0,0);
         walletCount +=1;
-    }
+    }*/
 
-    emit logAddedOffering(Offerings[newID].ID, Offerings[newID].name, Offerings[newID].issuer);
+    //emit logAddedOffering(Offerings[newID].ID, Offerings[newID].name, Offerings[newID].issuer);
+    emit logAddedOffering(Offerings[newID]);
 }
 
 
@@ -183,10 +212,24 @@ function addOffering(
 
 }*/
 
-/*function Payements (offering Offering, uint usdtPrice) internal {
+
+function offeringsLoader(offering[] memory offeringList, uint usdtPrice) internal {
 
 
-contractIDList = offering.contractList;
+for (uint i = 0 ; i< offeringList.length ; i++)
+{
+handleFixing(offeringList[i], usdtPrice);
+}
+
+
+
+}
+
+
+function handleFixing (offering memory Offering, uint usdtPrice) internal {
+
+
+uint [] memory  contractIDList = Offering.contractList;
 
   if (usdtPrice < (Offering.di_barrier* ethusdt0)){
     Offering.Di_barrier_activated=true;
@@ -195,10 +238,8 @@ contractIDList = offering.contractList;
 
 if(usdtPrice > Offering.Upoutbarrier*ethusdt0){
 
-            for (int i =0; i< contractIDList.length ; i++){
-
-
-                uint buyerGets = ContractMap[i].amount + offering.high_coupon*ContractMap[i].amount;
+            for (uint i =0; i< contractIDList.length ; i++){
+                uint buyerGets = ContractMap[i].amount + Offering.high_coupon*ContractMap[i].amount;
             }
         }
 
@@ -206,7 +247,7 @@ if(usdtPrice > Offering.Upoutbarrier*ethusdt0){
 
 
 }
-*/
+
 
 
 function buyOffering(uint _id) public payable returns(string memory) {
@@ -229,7 +270,8 @@ ContractMap[contractCount] = offeringContract(
     contractCount
 );
 Offerings[_id]. contractList . push(contractCount);
-emit getContract(ContractMap[contractCount].buyer,ContractMap[contractCount].issuer,ContractMap[contractCount].amount,ContractMap[contractCount].offeringID,ContractMap[contractCount].contractID);
+//emit getContract(ContractMap[contractCount].buyer,ContractMap[contractCount].issuer,ContractMap[contractCount].amount,ContractMap[contractCount].offeringID,ContractMap[contractCount].contractID);
+emit getContract(ContractMap[contractCount]);
 contractCount+=1;
 
 

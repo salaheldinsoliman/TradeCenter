@@ -15,6 +15,13 @@ contract("YieldOfferings", function (accounts) {
     });
 
     it ('should add a offering', async ()=> {
+
+signIn = await yieldOfferings.SignInIssuer()
+//let event = await yieldOfferings.events.getIssuer()
+//console.log(event)
+//console.log("a7a",signIn.toString())
+
+
       console.log(accounts[0])
       result = await yieldOfferings.addOffering("offerig1", 3,3,3,3,3,3);
     //  console.log(yieldOfferings.IDList[0], "test");
@@ -36,7 +43,7 @@ contract("YieldOfferings", function (accounts) {
 
 let buy = await yieldOfferings.buyOffering(1, {from : accounts[1], value : 1000000});
 //console.log(buy.toString())
-yieldOfferings.events.getContract();
+await yieldOfferings.events.getContract();
 
 
     });
