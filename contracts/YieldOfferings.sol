@@ -21,7 +21,7 @@ uint price= 2400;
 uint ethusdt0= 2300;
 
 mapping (uint => offering) public Offerings; //mapping offerings to ids
-mapping (address => wallet) public wallets;
+mapping (address => wallet) public walletMap;
 mapping(uint => offeringContract) ContractMap;
 
 struct wallet {
@@ -42,6 +42,7 @@ struct issuer {
     //uint256 balance;
     //uint256 accountPayable;
     uint[] offeringsList;
+    //uint WalletID;
     //uint[] ContractsIds;
     //bool hasWallet;
 }
@@ -78,6 +79,7 @@ struct offering{
 event logAddedOffering(offering);
 event getContract (offeringContract);
 event getIssuer (issuer);
+event getWalletInfo(wallet);
 // function to add a new offering 
 
 function SignInIssuer () public  {
@@ -87,11 +89,18 @@ require(IssuersMap[msg.sender].issuerAddress==0x00000000000000000000000000000000
     offering[] offerings;
     uint[] ContractsIds;
 }*/
+walletMap[msg.sender] = wallet (
+0,
+0
+);
+walletCount = walletCount+1;
+
 uint[] memory offeringEmptyList;
 IssuersMap[msg.sender] = issuer(
 msg.sender,
 offeringEmptyList
 );
+
 
 
 emit getIssuer(IssuersMap[msg.sender]);
@@ -110,7 +119,7 @@ function addOffering(
     uint _di_barrier
     
    ) public{
-    require(IssuersMap[msg.sender].issuerAddress==msg.sender, "Please Sign In" );
+    require(IssuersMap[msg.sender].issuerAddress==msg.sender, "Please Sign In as Issuer" );
     require(bytes(_name).length>0, "name cannot beval empty");
     //require(IssuersMap[msg.sender].issuerAddress, msg.sender);
 
@@ -142,7 +151,7 @@ function addOffering(
     }
 
     if (ownsWallet== false){
-        wallets[msg.sender]= wallet(0,0);
+        walletMap[msg.sender]= wallet(0,0);
         walletCount +=1;
     }*/
 
@@ -274,8 +283,10 @@ Offerings[_id]. contractList . push(contractCount);
 emit getContract(ContractMap[contractCount]);
 contractCount+=1;
 
+walletMap [Offerings[_id].issuer] . eth = msg.value ;
 
 
+emit getWalletInfo (walletMap [Offerings[_id].issuer]);
 //Offerings[_id]. contractList . append()
 
 return aloo;

@@ -23,7 +23,7 @@ signIn = await yieldOfferings.SignInIssuer()
 
 
       console.log(accounts[0])
-      result = await yieldOfferings.addOffering("offerig1", 3,3,3,3,3,3);
+      result = await yieldOfferings.addOffering("offerig1", 3,3,3,3,3,3 );
     //  console.log(yieldOfferings.IDList[0], "test");
     //yieldOfferings.events.logAddedOffering();
 
