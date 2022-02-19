@@ -42,8 +42,9 @@ signIn = await yieldOfferings.SignInIssuer()
 
 
 let buy = await yieldOfferings.buyOffering(1, {from : accounts[1], value : 1000000});
+let depositToWallet = await yieldOfferings.depositToWallet ({from : accounts[0],value:50000})
 //console.log(buy.toString())
-await yieldOfferings.events.getContract();
+//await yieldOfferings.events.getContract();
 
 
     });

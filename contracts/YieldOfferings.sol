@@ -257,6 +257,15 @@ if(usdtPrice > Offering.Upoutbarrier*ethusdt0){
 
 }
 
+function depositToWallet () public payable {
+require(IssuersMap[msg.sender].issuerAddress==msg.sender || BuyersMap[msg.sender].issuerAddress==msg.sender);
+
+walletMap[msg.sender].eth += msg.value;
+
+emit getWalletInfo(walletMap[msg.sender]);
+
+}
+
 
 
 function buyOffering(uint _id) public payable returns(string memory) {
@@ -286,7 +295,7 @@ contractCount+=1;
 walletMap [Offerings[_id].issuer] . eth = msg.value ;
 
 
-emit getWalletInfo (walletMap [Offerings[_id].issuer]);
+//emit getWalletInfo (walletMap [Offerings[_id].issuer]);
 //Offerings[_id]. contractList . append()
 
 return aloo;
