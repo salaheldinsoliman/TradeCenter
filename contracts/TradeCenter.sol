@@ -213,6 +213,13 @@ IERC20(_tokenIn).transferFrom(msg.sender, address(this), _amountIn);
 
 }
 
+
+//function checkPayables (offering)
+
+
+
+
+
 receive() external payable {
         //emit Deposit(msg.sender, msg.value, address(this).balance);
     }

@@ -127,7 +127,7 @@ function addOffering(
 // how will we know the agreed on price?
 // how will the issuer fail to pay a coupon?
 
-function checkPayables(uint256 id) public returns(uint){
+/*function checkPayables(uint256 id) public returns(uint){
     uint buyerGets;
     Offerings[ContractMap[id].offeringID].fixing_counter+=1;
     if (price< (Offerings[ContractMap[id].offeringID].di_barrier* ethusdt0)){
@@ -181,12 +181,38 @@ function checkPayables(uint256 id) public returns(uint){
     }
 
 
+}*/
+
+/*function Payements (offering Offering, uint usdtPrice) internal {
+
+
+contractIDList = offering.contractList;
+
+  if (usdtPrice < (Offering.di_barrier* ethusdt0)){
+    Offering.Di_barrier_activated=true;
+    }
+
+
+if(usdtPrice > Offering.Upoutbarrier*ethusdt0){
+
+            for (int i =0; i< contractIDList.length ; i++){
+
+
+                uint buyerGets = ContractMap[i].amount + offering.high_coupon*ContractMap[i].amount;
+            }
+        }
+
+
+
+
 }
+*/
+
 
 function buyOffering(uint _id) public payable returns(string memory) {
 
 /*struct offeringContract{
-    address buyer;
+    address buy
     address issuer;
     uint amount;
     uint offeringID;
