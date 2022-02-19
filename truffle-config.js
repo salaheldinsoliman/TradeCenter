@@ -18,7 +18,7 @@
  *
  */
 
- const HDWalletProvider = require('@truffle/hdwallet-provider');
+ //const HDWalletProvider = require('@truffle/hdwallet-provider');
 //
 
 // insert your sectret phrase here =====>
@@ -112,7 +112,9 @@ maticmumbai: {
   // Set default mocha options here, use special reporters etc.
   mocha: {
     // timeout: 100000
-  },
+
+  },  contracts_directory: './src/contracts/',
+  contracts_build_directory: './src/abis/',
 
   // Configure your compilers
   compilers: {
