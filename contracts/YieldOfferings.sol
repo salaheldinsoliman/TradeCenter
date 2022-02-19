@@ -268,6 +268,8 @@ emit getWalletInfo(walletMap[msg.sender]);
 
 
 
+
+
 function buyOffering(uint _id) public payable returns(string memory) {
 
 /*struct offeringContract{
