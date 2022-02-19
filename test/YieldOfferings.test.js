@@ -34,7 +34,7 @@ contract("YieldOfferings", function (accounts) {
      //yieldOfferings.events.logAddedOffering();
 
 
-let buy = await yieldOfferings.buyOffering(1, {from : accounts[0], value : 1000000});
+let buy = await yieldOfferings.buyOffering(1, {from : accounts[1], value : 1000000});
 //console.log(buy.toString())
 yieldOfferings.events.getContract();
 

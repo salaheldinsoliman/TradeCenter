@@ -203,10 +203,11 @@ ContractMap[contractCount] = offeringContract(
     contractCount
 );
 Offerings[_id]. contractList . push(contractCount);
+emit getContract(ContractMap[contractCount].buyer,ContractMap[contractCount].issuer,ContractMap[contractCount].amount,ContractMap[contractCount].offeringID,ContractMap[contractCount].contractID);
 contractCount+=1;
 
 
-emit getContract(ContractMap[contractCount].buyer,ContractMap[contractCount].issuer,ContractMap[contractCount].amount,ContractMap[contractCount].offeringID,ContractMap[contractCount].contractID);
+
 //Offerings[_id]. contractList . append()
 
 return aloo;
