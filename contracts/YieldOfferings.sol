@@ -1,7 +1,16 @@
 pragma solidity 0.8.9;
 
-contract YieldOfferings {
+import "./TradeCenter.sol";
+//import "./ERC20.sol";
+
+interface ERC20{
+  function deposit() external payable;
+  function withdraw(uint256 amount) external;
+}
+
+contract YieldOfferings is TradeCenter {
    
+ERC20 weth;  
 address public owner = msg.sender; // contract owner
  // will be used in logic
 uint offeringCount = 0; // keep track of all number
@@ -10,6 +19,7 @@ uint walletCount=0;
 uint[] public offeringIDList; // all ids list
 address[] walletOwners;
 string aloo = "Bought!";
+//address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
 //mapping (address=> bool) public hasWallet;
 
@@ -23,10 +33,14 @@ uint ethusdt0= 2300;
 mapping (uint => offering) public Offerings; //mapping offerings to ids
 mapping (address => wallet) public walletMap;
 mapping(uint => offeringContract) ContractMap;
+mapping (string => address) CoinMap;
 
 struct wallet {
 uint usdt;
 uint eth;
+uint weth;
+//uint ONEINCH;
+//uint WETH;
 }
 
 struct buyer {
@@ -82,6 +96,11 @@ event getIssuer (issuer);
 event getWalletInfo(wallet);
 // function to add a new offering 
 
+constructor () public {
+
+    weth = ERC20 (WETH);
+}
+
 function SignInIssuer () public  {
 require(IssuersMap[msg.sender].issuerAddress==0x0000000000000000000000000000000000000000, "Already Signed in as Issuer!" );
 /*struct issuer {
@@ -90,6 +109,7 @@ require(IssuersMap[msg.sender].issuerAddress==0x00000000000000000000000000000000
     uint[] ContractsIds;
 }*/
 walletMap[msg.sender] = wallet (
+0,
 0,
 0
 );
@@ -104,6 +124,13 @@ offeringEmptyList
 
 
 emit getIssuer(IssuersMap[msg.sender]);
+
+}
+
+function supportCoin(address CoinAddress, string memory CoinName) public {
+require(msg.sender == owner);
+CoinMap[CoinName] = CoinAddress;
+
 
 }
 
@@ -266,7 +293,22 @@ emit getWalletInfo(walletMap[msg.sender]);
 
 }
 
+function swapETHFromBuiltInWallet (address from, address to, uint amount)public {
 
+require(walletMap[msg.sender].eth >= amount);
+uint deadline = block.timestamp + 100;
+    address[] memory path = new address[](2);
+    path[0] = CoinMap["WETH"];
+    path[1] = CoinMap["USDT"];
+
+//WETH.call{value : amount}("");
+weth.deposit{value : amount}();
+walletMap[msg.sender]. weth += amount;
+walletMap[msg.sender] .eth -= amount;
+//IUniswapV2Router(UNISWAP_V2_ROUTER).swapExactETHForTokens {value : amount} (0,path,address(this),deadline);
+emit getWalletInfo(walletMap[msg.sender]);
+
+}
 
 
 
@@ -319,6 +361,12 @@ function getContractCount() public view returns (uint count){
 
 return contractCount;
 
+}
+
+function getContractETH () public view returns (uint){
+
+return address(this).balance;
+    
 }
 
 

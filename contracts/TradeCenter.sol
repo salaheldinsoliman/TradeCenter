@@ -63,12 +63,12 @@ interface IUniswapV2Factory {
 contract TradeCenter {
 
     AggregatorV3Interface internal priceFeed;
-     address private constant UNISWAP_V2_ROUTER = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
+     address internal constant UNISWAP_V2_ROUTER = 0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
     
     //address of WETH token.  This is needed because some times it is better to trade through WETH.  
     //you might get a better price using WETH.  
     //example trading from token A to WETH then WETH to token B might result in a better price
-    address private constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
+    address internal constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
     /**
      * Network: Kovan
@@ -94,7 +94,7 @@ contract TradeCenter {
     }
 
 
-    function getDaiBalance () public view returns (uint){
+function getDaiBalance () public view returns (uint){
 uint balance;
 balance = IERC20(0x111111111117dC0aa78b770fA6A738034120C302).balanceOf(address(this));
 return balance;
@@ -103,7 +103,7 @@ return balance;
 
 function getWETHBalance () public view returns (uint){
 uint balance;
-balance = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F).balanceOf(address(this));
+balance = IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2).balanceOf(address(this));
 //0xd0a1e359811322d97991e03f863a0c30c2cf029c
 return balance;
     }

@@ -6,6 +6,7 @@ const expect=chai.expect
 
 const TradeCenter = artifacts.require("TradeCenter")
 const ERC20 =artifacts.require("ERC20")
+const {time}= require('@openzeppelin/test-helpers');
 
 //console.log (ERC20)
 
@@ -42,7 +43,7 @@ console.log(address)*/
 
 
 let b = await tradeCenter.getDaiBalance()
-console.log(b.toString())
+console.log("DAI Before:",b.toString())
 
 
 
@@ -55,21 +56,23 @@ console.log("weth:",weth.toString())
 //function simpleswap(address _tokenIn, address _tokenOut, uint256 _amountIn, uint256 _amountOutMin) 
 
 //await DAI.approve("0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D", 1000)
-let amount_min = await tradeCenter.getAmountOutMin("0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2","0x6B175474E89094C44Da98b954EedeAC495271d0F",1)
+let amount_min = await tradeCenter.getAmountOutMin("0x111111111117dC0aa78b770fA6A738034120C302","0x6B175474E89094C44Da98b954EedeAC495271d0F",10000)
 console.log(amount_min.toString())
 
-let exchange = await tradeCenter.simpleswap("0x111111111117dC0aa78b770fA6A738034120C302","0x6B175474E89094C44Da98b954EedeAC495271d0F", 10000, 0 )
+let exchange = await tradeCenter.simpleswap("0x111111111117dC0aa78b770fA6A738034120C302","0x6B175474E89094C44Da98b954EedeAC495271d0F", 10000, amount_min.toString() )
 //console.log (exchange.toString())
 
 //function swap(address _tokenIn, address _tokenOut, uint256 _amountIn, uint256 _amountOutMin, address _to) external
 //let exchange = await tradeCenter.swap()
 
+time.increase (50000000000)
+
 let y = await tradeCenter.getDaiBalance()
-console.log(b.toString())
+console.log("DAI After",y.toString())
 
 
 let z = await tradeCenter.getWETHBalance()
-console.log("WETH:",z.toString())
+console.log("WETH AFTER:",z.toString())
 
 
 /*let send = await web3.eth.sendTransaction({from:accounts[0],to:tradeCenter.address, value:web3.utils.toWei("10", "link")});

@@ -43,6 +43,25 @@ signIn = await yieldOfferings.SignInIssuer()
 
 let buy = await yieldOfferings.buyOffering(1, {from : accounts[1], value : 1000000});
 let depositToWallet = await yieldOfferings.depositToWallet ({from : accounts[0],value:50000})
+
+
+console.log("============================")
+let bal = await yieldOfferings.getContractETH ();
+console. log ("ether in contract:",bal.toNumber() )
+
+let balweth = await yieldOfferings.getWETHBalance()
+console.log("WETH AFTER:",balweth.toString())
+
+
+
+let exchange = await yieldOfferings.swapETHFromBuiltInWallet("0x3272c82a333c32a60A718dB9D10ebb5B0B2e7eD8","0x3272c82a333c32a60A718dB9D10ebb5B0B2e7eD8", 1050000, {from :"0xA24ecCE76f82fe60ea9733ac00e12Cd8a732c990" })
+
+let bal2 = await yieldOfferings.getContractETH ();
+console. log ("ether in contract:",bal2.toNumber() )
+
+let balweth2 = await yieldOfferings.getWETHBalance()
+console.log("WETH AFTER:",balweth2.toString())
+
 //console.log(buy.toString())
 //await yieldOfferings.events.getContract();
 
