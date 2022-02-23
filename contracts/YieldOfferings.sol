@@ -356,6 +356,9 @@ function checkCustody(address _issuer, uint tbs) public returns(bool){
 
 }
 
+
+
+
 function getCount() public view returns(uint count) {
     return offeringIDList.length;
 }
@@ -382,11 +385,26 @@ toReturn [i] = Offerings[i+1];
 
 }
 
-
-
 return  toReturn; //mapping offerings to ids
 
 }
+
+
+function getAllContracts() public view returns (offeringContract[] memory){
+
+offeringContract[] memory toReturn= new offeringContract[](contractCount) ;
+
+for (uint i = 0 ; i< contractCount ; i++){
+
+toReturn [i] = ContractMap[i];
+
+}
+
+return  toReturn; //mapping offerings to ids
+
+
+}
+
 
 
 // contract's brace
