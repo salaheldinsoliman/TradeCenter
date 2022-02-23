@@ -274,10 +274,10 @@ uint  contractID = Offering.contractID;
 
 if(usdtPrice > Offering.Upoutbarrier*ethusdt0){
 
-           /* for (uint i =0; i< contractIDList.length ; i++){
+            for (uint i =0; i< contractIDList.length ; i++){
                 uint buyerGets = ContractMap[i].amount + Offering.high_coupon*ContractMap[i].amount;
-                //EndContract(Offering, )
-            }*/
+                EndContract( contractID );
+            }
         }
 
 
@@ -285,7 +285,11 @@ if(usdtPrice > Offering.Upoutbarrier*ethusdt0){
 
 }
 
-//function EndContract ()
+function EndContract ( uint contractID) internal{
+
+delete ContractMap[contractID];
+
+}
 
 function depositToWallet () public payable {
 require(IssuersMap[msg.sender].issuerAddress==msg.sender || BuyersMap[msg.sender].issuerAddress==msg.sender);

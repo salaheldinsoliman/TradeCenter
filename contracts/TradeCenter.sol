@@ -70,6 +70,8 @@ contract TradeCenter {
     //example trading from token A to WETH then WETH to token B might result in a better price
     address internal constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
+    mapping (uint => uint ) EthPriceLog;
+
     /**
      * Network: Kovan
      * Aggregator: ETH/USD
@@ -92,6 +94,12 @@ contract TradeCenter {
         ) = priceFeed.latestRoundData();
         return price;
     }
+
+  function fillPriceLog () public {
+
+uint price = getLatestPrice();
+EthPriceLog [block.timestamp] = price;
+  }
 
 
 function getDaiBalance () public view returns (uint){
