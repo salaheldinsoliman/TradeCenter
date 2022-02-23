@@ -24,6 +24,11 @@ signIn = await yieldOfferings.SignInIssuer()
 
       console.log(accounts[0])
       result = await yieldOfferings.addOffering("offerig1", 3,3,3,3,3,3 );
+      let result2 = await yieldOfferings.addOffering("offerig1", 3,3,3,3,3,3 );
+
+      let offeringsarray = await yieldOfferings.getOfferings();
+      console.log (offeringsarray)
+
     //  console.log(yieldOfferings.IDList[0], "test");
     //yieldOfferings.events.logAddedOffering();
 
@@ -36,7 +41,7 @@ signIn = await yieldOfferings.SignInIssuer()
      const result = charity.returnID(0);
      */ 
     result2 = await yieldOfferings.getCount();
-     assert.equal(result2.toNumber(),1);
+     ///assert.equal(result2.toNumber(),1);
      console.log (result2.toNumber())
      //yieldOfferings.events.logAddedOffering();
 
@@ -54,13 +59,14 @@ console.log("WETH AFTER:",balweth.toString())
 
 
 
-let exchange = await yieldOfferings.swapETHFromBuiltInWallet("0x3272c82a333c32a60A718dB9D10ebb5B0B2e7eD8","0x3272c82a333c32a60A718dB9D10ebb5B0B2e7eD8", 1050000, {from :"0xA24ecCE76f82fe60ea9733ac00e12Cd8a732c990" })
+let exchange = await yieldOfferings.swapETHFromBuiltInWallet( 1050000, {from :accounts[0] })
 
 let bal2 = await yieldOfferings.getContractETH ();
 console. log ("ether in contract:",bal2.toNumber() )
 
 let balweth2 = await yieldOfferings.getWETHBalance()
 console.log("WETH AFTER:",balweth2.toString())
+
 
 //console.log(buy.toString())
 //await yieldOfferings.events.getContract();

@@ -1,11 +1,11 @@
-const TradeCenter = artifacts.require('TradeCenter');
+const GasTesting = artifacts.require('GasTesting');
 
 module.exports = async function (deployer,network, accounts) {
 
 
 
-await deployer.deploy(TradeCenter );
-const tradeCenter = await TradeCenter.deployed()
+await deployer.deploy(GasTesting );
+const gasTesting = await GasTesting.deployed()
 };
 
 

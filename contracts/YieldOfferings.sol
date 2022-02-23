@@ -86,7 +86,7 @@ struct offering{
     uint Upoutbarrier;
     uint di_barrier;
     bool Di_barrier_activated;
-    uint[] contractList;
+    uint contractID;
 }
 
 
@@ -154,7 +154,7 @@ function addOffering(
     //offeringContract[] storage emptyList;
     //newCampaign.deadline= block.timestamp + (_duration * 1 days);
     offeringIDList.push(newID);
-    uint[] memory contractList;
+    uint  contractID;
     Offerings[newID] = offering(msg.sender, 
      newID, 
      _name,
@@ -166,7 +166,7 @@ function addOffering(
      _Upoutbarrier,
      _di_barrier,
       false,
-    contractList);
+    contractID);
     
     offeringCount+= 1;
 
@@ -265,7 +265,7 @@ handleFixing(offeringList[i], usdtPrice);
 function handleFixing (offering memory Offering, uint usdtPrice) internal {
 
 
-uint [] memory  contractIDList = Offering.contractList;
+uint  contractID = Offering.contractID;
 
   if (usdtPrice < (Offering.di_barrier* ethusdt0)){
     Offering.Di_barrier_activated=true;
@@ -274,15 +274,18 @@ uint [] memory  contractIDList = Offering.contractList;
 
 if(usdtPrice > Offering.Upoutbarrier*ethusdt0){
 
-            for (uint i =0; i< contractIDList.length ; i++){
+           /* for (uint i =0; i< contractIDList.length ; i++){
                 uint buyerGets = ContractMap[i].amount + Offering.high_coupon*ContractMap[i].amount;
-            }
+                //EndContract(Offering, )
+            }*/
         }
 
 
 
 
 }
+
+//function EndContract ()
 
 function depositToWallet () public payable {
 require(IssuersMap[msg.sender].issuerAddress==msg.sender || BuyersMap[msg.sender].issuerAddress==msg.sender);
@@ -293,7 +296,7 @@ emit getWalletInfo(walletMap[msg.sender]);
 
 }
 
-function swapETHFromBuiltInWallet (address from, address to, uint amount)public {
+function swapETHFromBuiltInWallet (uint amount)public {
 
 require(walletMap[msg.sender].eth >= amount);
 uint deadline = block.timestamp + 100;
@@ -331,7 +334,7 @@ ContractMap[contractCount] = offeringContract(
     _id,
     contractCount
 );
-Offerings[_id]. contractList . push(contractCount);
+Offerings[_id]. contractID = contractCount;
 //emit getContract(ContractMap[contractCount].buyer,ContractMap[contractCount].issuer,ContractMap[contractCount].amount,ContractMap[contractCount].offeringID,ContractMap[contractCount].contractID);
 emit getContract(ContractMap[contractCount]);
 contractCount+=1;
@@ -367,6 +370,22 @@ function getContractETH () public view returns (uint){
 
 return address(this).balance;
     
+}
+
+function getOfferings () public view returns (offering[] memory){
+
+offering[] memory toReturn= new offering[](offeringIDList.length) ;
+
+for (uint i = 0 ; i< offeringIDList.length ; i++){
+
+toReturn [i] = Offerings[i+1];
+
+}
+
+
+
+return  toReturn; //mapping offerings to ids
+
 }
 
 
