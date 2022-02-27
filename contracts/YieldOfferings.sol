@@ -1,16 +1,20 @@
 pragma solidity 0.8.9;
 
 import "./TradeCenter.sol";
-//import "./ERC20.sol";
+//import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Wrapper.sol";
 
-interface ERC20{
+import "./ERC20.sol";
+
+interface _ERC20{
   function deposit() external payable;
   function withdraw(uint256 amount) external;
+  function name() external returns (string memory);
+  
 }
 
 contract YieldOfferings is TradeCenter {
    
-ERC20 weth;  
+_ERC20 weth;  
 address public owner = msg.sender; // contract owner
  // will be used in logic
 uint offeringCount = 0; // keep track of all number
@@ -98,7 +102,7 @@ event getWalletInfo(wallet);
 
 constructor () public {
 
-    weth = ERC20 (WETH);
+    weth = _ERC20 (WETH);
 }
 
 function SignInIssuer () public  {
@@ -274,10 +278,10 @@ uint  contractID = Offering.contractID;
 
 if(usdtPrice > Offering.Upoutbarrier*ethusdt0){
 
-            for (uint i =0; i< contractIDList.length ; i++){
-                uint buyerGets = ContractMap[i].amount + Offering.high_coupon*ContractMap[i].amount;
+            
+                uint buyerGets = ContractMap[contractID].amount + Offering.high_coupon*ContractMap[contractID].amount;
                 EndContract( contractID );
-            }
+
         }
 
 
@@ -290,6 +294,7 @@ function EndContract ( uint contractID) internal{
 delete ContractMap[contractID];
 
 }
+
 
 function depositToWallet () public payable {
 require(IssuersMap[msg.sender].issuerAddress==msg.sender || BuyersMap[msg.sender].issuerAddress==msg.sender);
@@ -352,13 +357,13 @@ walletMap [Offerings[_id].issuer] . eth = msg.value ;
 return aloo;
 
 }
-
+/*
 function checkCustody(address _issuer, uint tbs) public returns(bool){
     bool isAllowed= false;
     uint256 issuerBalance= _issuer.balance;
     //check all linked offerings to issuer
 
-}
+}*/
 
 
 

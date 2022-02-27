@@ -70,7 +70,7 @@ contract TradeCenter {
     //example trading from token A to WETH then WETH to token B might result in a better price
     address internal constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-    mapping (uint => uint ) EthPriceLog;
+    mapping (uint => int ) EthPriceLog;
 
     /**
      * Network: Kovan
@@ -97,7 +97,7 @@ contract TradeCenter {
 
   function fillPriceLog () public {
 
-uint price = getLatestPrice();
+int price = getLatestPrice();
 EthPriceLog [block.timestamp] = price;
   }
 
