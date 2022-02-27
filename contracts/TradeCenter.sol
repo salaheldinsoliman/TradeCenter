@@ -70,7 +70,7 @@ contract TradeCenter {
     //example trading from token A to WETH then WETH to token B might result in a better price
     address internal constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-    mapping (uint => int ) EthPriceLog;
+    
 
     /**
      * Network: Kovan
@@ -84,6 +84,7 @@ contract TradeCenter {
     /**
      * Returns the latest price
      */
+
     function getLatestPrice() public view returns (int) {
         (
             uint80 roundID, 
@@ -95,12 +96,7 @@ contract TradeCenter {
         return price;
     }
 
-  function fillPriceLog () public {
-
-int price = getLatestPrice();
-EthPriceLog [block.timestamp] = price;
-  }
-
+  
 
 function getDaiBalance () public view returns (uint){
 uint balance;
@@ -234,3 +230,66 @@ receive() external payable {
 
 
 } 
+
+
+
+    
+/////// BUY BACK PART /////////
+// how will we know the agreed on price?
+// how will the issuer fail to pay a coupon?
+
+/*function checkPayables(uint256 id) public returns(uint){
+    uint buyerGets;
+    Offerings[ContractMap[id].offeringID].fixing_counter+=1;
+    if (price< (Offerings[ContractMap[id].offeringID].di_barrier* ethusdt0)){
+    Offerings[ContractMap[id].offeringID].Di_barrier_activated=true;
+    }
+
+
+    // if not last fixing
+    if (Offerings[ContractMap[id].offeringID].fixing_counter< Offerings[ContractMap[id].offeringID].Nb_fixings){
+        if(price > Offerings[ContractMap[id].offeringID].Upoutbarrier*ethusdt0){
+            // send amount X to buyer+ high_coupon X
+            buyerGets= ContractMap[id].amount + (Offerings[ContractMap[id].offeringID].high_coupon*ContractMap[id].amount);
+        }
+        else if (price> Offerings[ContractMap[id].offeringID].high_coupon_barrier*ethusdt0){
+            // send buyer hight_couponX
+            buyerGets= Offerings[ContractMap[id].offeringID].high_coupon*ContractMap[id].amount;
+
+        }
+        else if (Offerings[ContractMap[id].offeringID].Di_barrier_activated== false){
+            //buyer get smaller_couponX
+            buyerGets= ContractMap[id].amount + Offerings[ContractMap[id].offeringID].smaller_coupon * ContractMap[id].amount;
+
+        }
+        else {
+            // buyer gets nothing
+            buyerGets=0;
+        }
+    }
+
+    else{
+        
+        if (price> Offerings[ContractMap[id].offeringID].high_coupon_barrier*ethusdt0){
+            // send buyer hight_couponX + X (what is this amount?)
+            buyerGets= ContractMap[id].amount + (Offerings[ContractMap[id].offeringID].high_coupon*ContractMap[id].amount);
+  
+        }
+        else if(Offerings[ContractMap[id].offeringID].Di_barrier_activated= false){
+            
+            //buyer gets lower_coupon*X+X
+            
+            buyerGets= ContractMap[id].amount + (Offerings[ContractMap[id].offeringID].smaller_coupon *ContractMap[id].amount);
+
+            
+        
+        }
+        else {
+            //X= getamount(id,)
+            buyerGets= (ContractMap[id].amount/Offerings[ContractMap[id].offeringID].high_coupon_barrier)/ ethusdt0;    
+        }
+        
+    }
+
+
+}*/

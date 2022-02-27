@@ -37,8 +37,8 @@ let send = await DAI.transfer(tradeCenter.address, 30000, {from : "0xF977814e90d
 
 
 //let send2 = await web3.eth.sendTransaction({from:accounts[0],to:tradeCenter.address, value:web3.utils.toWei("0.1", "ether")});
-/*let a = await tradeCenter.getLatestPrice()
-console.log(a.toNumber())
+let a = await tradeCenter.getLatestPrice()
+console.log(a.toString())/*
 let address = await tradeCenter.address
 console.log(address)*/
 

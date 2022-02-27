@@ -16,6 +16,10 @@ contract("YieldOfferings", function (accounts) {
 
     it ('should add a offering', async ()=> {
 
+
+let getDay = await yieldOfferings.getDayFromTimeStamp()
+console.log(getDay.toNumber())
+
 signIn = await yieldOfferings.SignInIssuer()
 //let event = await yieldOfferings.events.getIssuer()
 //console.log(event)
@@ -47,9 +51,11 @@ signIn = await yieldOfferings.SignInIssuer()
 
 
 let buy = await yieldOfferings.buyOffering(1, {from : accounts[1], value : 1000000});
-
+let buy2 = await yieldOfferings.buyOffering(1, {from : accounts[2], value : 1000000});
+console.log("==============================================================")
 let getContracts = await yieldOfferings.getAllContracts();
 console.log(getContracts)
+console.log("==============================================================")
 
 let depositToWallet = await yieldOfferings.depositToWallet ({from : accounts[0],value:50000})
 

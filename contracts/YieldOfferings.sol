@@ -4,6 +4,7 @@ import "./TradeCenter.sol";
 //import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Wrapper.sol";
 
 import "./ERC20.sol";
+import "./DateTime.sol";
 
 interface _ERC20{
   function deposit() external payable;
@@ -12,7 +13,7 @@ interface _ERC20{
   
 }
 
-contract YieldOfferings is TradeCenter {
+contract YieldOfferings is TradeCenter, DateTime {
    
 _ERC20 weth;  
 address public owner = msg.sender; // contract owner
@@ -23,6 +24,7 @@ uint walletCount=0;
 uint[] public offeringIDList; // all ids list
 address[] walletOwners;
 string aloo = "Bought!";
+int[][][] EthPriceLog;
 //address WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
 //mapping (address=> bool) public hasWallet;
@@ -31,13 +33,12 @@ string aloo = "Bought!";
 
 
 
-uint price= 2400;
-uint ethusdt0= 2300;
 
 mapping (uint => offering) public Offerings; //mapping offerings to ids
 mapping (address => wallet) public walletMap;
 mapping(uint => offeringContract) ContractMap;
 mapping (string => address) CoinMap;
+//mapping (_DateTime => int ) EthPriceLog;
 
 struct wallet {
 uint usdt;
@@ -76,6 +77,7 @@ struct offeringContract{
     uint amount;
     uint offeringID;
     uint contractID;
+    int ethusdt0;
 }
 
 struct offering{
@@ -266,23 +268,43 @@ handleFixing(offeringList[i], usdtPrice);
 }
 
 
+
+
 function handleFixing (offering memory Offering, uint usdtPrice) internal {
 
 
 uint  contractID = Offering.contractID;
+int usdtPrice = getLatestPrice();
+int ethusdt0 = ContractMap[contractID].ethusdt0;
+uint buyerGets;
 
-  if (usdtPrice < (Offering.di_barrier* ethusdt0)){
+  if (usdtPrice < int((int(Offering.di_barrier)* ethusdt0))){
     Offering.Di_barrier_activated=true;
     }
 
 
-if(usdtPrice > Offering.Upoutbarrier*ethusdt0){
+if(usdtPrice > int (int (Offering.Upoutbarrier)*ethusdt0)){
 
             
-                uint buyerGets = ContractMap[contractID].amount + Offering.high_coupon*ContractMap[contractID].amount;
+                buyerGets = ContractMap[contractID].amount + Offering.high_coupon*ContractMap[contractID].amount;
                 EndContract( contractID );
 
         }
+
+else if (usdtPrice > int (Offering.high_coupon_barrier) * ethusdt0){
+
+buyerGets = ContractMap[contractID].amount * Offering.high_coupon;
+
+}
+
+else if (Offering.Di_barrier_activated==false){
+    buyerGets = ContractMap[contractID].amount * Offering.smaller_coupon;
+}
+
+
+
+
+
 
 
 
@@ -335,13 +357,16 @@ function buyOffering(uint _id) public payable returns(string memory) {
 }*/
 
 
-
+uint buyTimestamp = block.timestamp;
+int ethusdt0 = getLatestPrice();
 ContractMap[contractCount] = offeringContract(
     msg.sender,
     Offerings[_id].issuer,
     msg.value,
     _id,
-    contractCount
+    contractCount,
+    ethusdt0
+
 );
 Offerings[_id]. contractID = contractCount;
 //emit getContract(ContractMap[contractCount].buyer,ContractMap[contractCount].issuer,ContractMap[contractCount].amount,ContractMap[contractCount].offeringID,ContractMap[contractCount].contractID);
@@ -413,6 +438,27 @@ return  toReturn; //mapping offerings to ids
 
 
 }
+
+
+function getDayFromTimeStamp() public view returns (uint8) {
+
+return parseTimestamp(block.timestamp).day;
+}
+
+function fillPriceLog () public {
+
+int price = getLatestPrice();
+
+_DateTime memory key = parseTimestamp(block.timestamp);
+
+uint16 year =  key.year;
+uint8 month =  key.month;
+uint8 day =  key.day;
+
+
+EthPriceLog [year][month][day] = price;
+  }
+
 
 
 
