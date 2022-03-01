@@ -19,7 +19,7 @@ _ERC20 weth;
 address public owner = msg.sender; // contract owner
  // will be used in logic
 uint offeringCount = 0; // keep track of all number
-uint contractCount=0;
+uint contractCount=1;
 uint walletCount=0;
 uint[] public offeringIDList; // all ids list
 address[] walletOwners;
@@ -80,19 +80,23 @@ struct offeringContract{
     int ethusdt0;
 }
 
+/*uint _Nb_fixings,
+    uint _high_coupon,
+    uint _high_coupon_barrier,
+    uint _smaller_coupon,
+    uint _Upoutbarrier,
+    uint _di_barrier, */
+
+
 struct offering{
     address issuer;
     uint ID;
     string name;
-    uint Nb_fixings;
     uint fixing_counter;
-    uint high_coupon;
-    uint high_coupon_barrier;
-    uint smaller_coupon;
-    uint Upoutbarrier;
-    uint di_barrier;
     bool Di_barrier_activated;
     uint contractID;
+    string fixing_duration;
+    uint [] attributes;
 }
 
 
@@ -141,15 +145,55 @@ CoinMap[CoinName] = CoinAddress;
 }
 
 
+function addOfferingList(string memory _name,uint[] memory input, string memory fixing_duration)public{
+require(IssuersMap[msg.sender].issuerAddress==msg.sender, "Please Sign In as Issuer" );
+require(bytes(_name).length>0, "name cannot beval empty");
+//require(fixing_duration == "weekly" | fixing_duration == "daily" | fixing_duration == "monthly" );
 
-function addOffering(
+/*
+struct offering{
+    address issuer;
+    uint ID;
+    string name;
+    uint fixing_counter;
+    bool Di_barrier_activated;
+    uint contractID;
+    string fixing_duration;
+    uint [] attributes;
+} */
+
+
+    uint newID= offeringCount + 1;
+    offeringIDList.push(newID);
+    uint  contractID;
+    Offerings[newID] = offering(msg.sender, 
+     newID, 
+     _name,
+     0,
+     false,
+     0,
+    fixing_duration,
+    input);
+    
+    offeringCount+= 1;
+
+    
+    emit logAddedOffering(Offerings[newID]);
+
+
+
+}
+
+
+/*function addOffering(
     string memory _name,
     uint _Nb_fixings,
     uint _high_coupon,
     uint _high_coupon_barrier,
     uint _smaller_coupon,
     uint _Upoutbarrier,
-    uint _di_barrier
+    uint _di_barrier,
+    string memory fixing_duration
     
    ) public{
     require(IssuersMap[msg.sender].issuerAddress==msg.sender, "Please Sign In as Issuer" );
@@ -172,95 +216,24 @@ function addOffering(
      _Upoutbarrier,
      _di_barrier,
       false,
-    contractID);
+    contractID,
+    fixing_duration);
     
     offeringCount+= 1;
 
-    /*bool ownsWallet= false;
-    for (uint i=0; i< walletOwners.length; i++){
-        if (walletOwners[i] == msg.sender)
-        ownsWallet= true;
-        break;
-    }
-
-    if (ownsWallet== false){
-        walletMap[msg.sender]= wallet(0,0);
-        walletCount +=1;
-    }*/
-
-    //emit logAddedOffering(Offerings[newID].ID, Offerings[newID].name, Offerings[newID].issuer);
-    emit logAddedOffering(Offerings[newID]);
-}
-
-
     
-/////// BUY BACK PART /////////
-// how will we know the agreed on price?
-// how will the issuer fail to pay a coupon?
-
-/*function checkPayables(uint256 id) public returns(uint){
-    uint buyerGets;
-    Offerings[ContractMap[id].offeringID].fixing_counter+=1;
-    if (price< (Offerings[ContractMap[id].offeringID].di_barrier* ethusdt0)){
-    Offerings[ContractMap[id].offeringID].Di_barrier_activated=true;
-    }
-
-
-    // if not last fixing
-    if (Offerings[ContractMap[id].offeringID].fixing_counter< Offerings[ContractMap[id].offeringID].Nb_fixings){
-        if(price > Offerings[ContractMap[id].offeringID].Upoutbarrier*ethusdt0){
-            // send amount X to buyer+ high_coupon X
-            buyerGets= ContractMap[id].amount + (Offerings[ContractMap[id].offeringID].high_coupon*ContractMap[id].amount);
-        }
-        else if (price> Offerings[ContractMap[id].offeringID].high_coupon_barrier*ethusdt0){
-            // send buyer hight_couponX
-            buyerGets= Offerings[ContractMap[id].offeringID].high_coupon*ContractMap[id].amount;
-
-        }
-        else if (Offerings[ContractMap[id].offeringID].Di_barrier_activated== false){
-            //buyer get smaller_couponX
-            buyerGets= ContractMap[id].amount + Offerings[ContractMap[id].offeringID].smaller_coupon * ContractMap[id].amount;
-
-        }
-        else {
-            // buyer gets nothing
-            buyerGets=0;
-        }
-    }
-
-    else{
-        
-        if (price> Offerings[ContractMap[id].offeringID].high_coupon_barrier*ethusdt0){
-            // send buyer hight_couponX + X (what is this amount?)
-            buyerGets= ContractMap[id].amount + (Offerings[ContractMap[id].offeringID].high_coupon*ContractMap[id].amount);
-  
-        }
-        else if(Offerings[ContractMap[id].offeringID].Di_barrier_activated= false){
-            
-            //buyer gets lower_coupon*X+X
-            
-            buyerGets= ContractMap[id].amount + (Offerings[ContractMap[id].offeringID].smaller_coupon *ContractMap[id].amount);
-
-            
-        
-        }
-        else {
-            //X= getamount(id,)
-            buyerGets= (ContractMap[id].amount/Offerings[ContractMap[id].offeringID].high_coupon_barrier)/ ethusdt0;    
-        }
-        
-    }
-
-
+    emit logAddedOffering(Offerings[newID]);
 }*/
 
 
-function offeringsLoader(offering[] memory offeringList, uint usdtPrice) internal {
+
+
+function offeringsLoader(offering[] memory offeringList) internal {
 
 
 for (uint i = 0 ; i< offeringList.length ; i++)
 {
-handleFixing(offeringList[i], usdtPrice);
+handleFixing(offeringList[i]);
 }
 
 
@@ -269,8 +242,8 @@ handleFixing(offeringList[i], usdtPrice);
 
 
 
-
-function handleFixing (offering memory Offering, uint usdtPrice) internal {
+ 
+function handleFixing (offering memory Offering) internal {  //buis logic;
 
 
 uint  contractID = Offering.contractID;
@@ -278,34 +251,67 @@ int usdtPrice = getLatestPrice();
 int ethusdt0 = ContractMap[contractID].ethusdt0;
 uint buyerGets;
 
-  if (usdtPrice < int((int(Offering.di_barrier)* ethusdt0))){
+/*uint _Nb_fixings, 0
+    uint _high_coupon,1
+    uint _high_coupon_barrier,2
+    uint _smaller_coupon,3
+    uint _Upoutbarrier,4
+    uint _di_barrier, 5*/
+if (Offering.attributes[0] > Offering.fixing_counter){//normal fixing logic
+
+  if (usdtPrice < int((int(Offering.attributes[5])* ethusdt0))){
     Offering.Di_barrier_activated=true;
     }
 
 
-if(usdtPrice > int (int (Offering.Upoutbarrier)*ethusdt0)){
-
+if(usdtPrice > int (int (Offering.attributes[4])*ethusdt0)){
             
-                buyerGets = ContractMap[contractID].amount + Offering.high_coupon*ContractMap[contractID].amount;
+                buyerGets = ContractMap[contractID].amount + Offering.attributes[1]*ContractMap[contractID].amount;
                 EndContract( contractID );
 
         }
 
-else if (usdtPrice > int (Offering.high_coupon_barrier) * ethusdt0){
+else if (usdtPrice > int (Offering.attributes[2]) * ethusdt0){
 
-buyerGets = ContractMap[contractID].amount * Offering.high_coupon;
+buyerGets = ContractMap[contractID].amount * Offering.attributes[1];
 
 }
 
 else if (Offering.Di_barrier_activated==false){
-    buyerGets = ContractMap[contractID].amount * Offering.smaller_coupon;
+    buyerGets = ContractMap[contractID].amount * Offering.attributes[3];
+}
+
+else {
+    buyerGets = 0;
+}
+
+//inside normal fixings
+}
+
+
+else {
+
+if (usdtPrice >int (int ( Offering.attributes[2]) * ethusdt0)){
+
+buyerGets = Offering. attributes[1] * ContractMap[contractID].amount + ContractMap[contractID].amount;
+
+
+}
+
+else if (Offering.Di_barrier_activated= false){
+
+buyerGets = Offering.attributes[3] * ContractMap[contractID].amount + ContractMap[contractID].amount;
+
+}
+
+else {
+
+    buyerGets =uint ( ContractMap[contractID].amount) / uint (Offering.attributes[2]) / uint (ethusdt0) ;
 }
 
 
 
-
-
-
+}
 
 
 

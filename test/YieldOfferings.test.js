@@ -27,8 +27,10 @@ signIn = await yieldOfferings.SignInIssuer()
 
 
       console.log(accounts[0])
-      result = await yieldOfferings.addOffering("offerig1", 3,3,3,3,3,3 );
-      let result2 = await yieldOfferings.addOffering("offerig1", 3,3,3,3,3,3 );
+//function addOfferingList(string memory _name,uint[] memory input, string memory fixing_duration)
+
+      let result = await yieldOfferings.addOfferingList("offerig1", [3,3,3,3,3,3],"weekly" );
+      let result2 = await yieldOfferings.addOfferingList("offerig2", [3,3,3,3,3,3],"daily" );
 
       let offeringsarray = await yieldOfferings.getOfferings();
       console.log (offeringsarray)
@@ -44,9 +46,7 @@ signIn = await yieldOfferings.SignInIssuer()
       charity.events.logAddedCampaign();
      const result = charity.returnID(0);
      */ 
-    result2 = await yieldOfferings.getCount();
-     ///assert.equal(result2.toNumber(),1);
-     console.log (result2.toNumber())
+    
      //yieldOfferings.events.logAddedOffering();
 
 
