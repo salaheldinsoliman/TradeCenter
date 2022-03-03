@@ -21,7 +21,9 @@ address public owner = msg.sender; // contract owner
 uint offeringCount = 0; // keep track of all number
 uint contractCount=1;
 uint walletCount=0;
-uint[] public offeringIDList; // all ids list
+uint[] public MonthlyofferingIDList; // all ids list
+uint[] public WeeklyofferingIDList;
+uint[] public DailyofferingIDList;
 address[] walletOwners;
 string aloo = "Bought!";
 int[][][] EthPriceLog;
@@ -144,11 +146,14 @@ CoinMap[CoinName] = CoinAddress;
 
 }
 
+function compareStrings(string memory a, string memory b) public view returns (bool) {
+    return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
+}
 
 function addOfferingList(string memory _name,uint[] memory input, string memory fixing_duration)public{
 require(IssuersMap[msg.sender].issuerAddress==msg.sender, "Please Sign In as Issuer" );
 require(bytes(_name).length>0, "name cannot beval empty");
-//require(fixing_duration == "weekly" | fixing_duration == "daily" | fixing_duration == "monthly" );
+require(compareStrings(fixing_duration, "weekly") || compareStrings(fixing_duration, "monthly") || (compareStrings(fixing_duration, "daily") ) == true   );
 
 /*
 struct offering{
@@ -164,7 +169,12 @@ struct offering{
 
 
     uint newID= offeringCount + 1;
-    offeringIDList.push(newID);
+    if (compareStrings(fixing_duration, "weekly") )
+    {WeeklyofferingIDList.push(newID);}
+    else if (compareStrings(fixing_duration, "monthly") )
+    {MonthlyofferingIDList.push(newID);}
+    else {DailyofferingIDList.push(newID);}
+
     uint  contractID;
     Offerings[newID] = offering(msg.sender, 
      newID, 
@@ -224,22 +234,42 @@ struct offering{
 
 
 
-function offeringsLoader(offering[] memory offeringList) internal {
+function WeeklyofferingsLoader() internal {
 
 
-for (uint i = 0 ; i< offeringList.length ; i++)
+for (uint i = 0 ; i< WeeklyofferingIDList.length ; i++)
 {
-handleFixing(offeringList[i]);
+handleFixing(Offerings[ WeeklyofferingIDList[i]]);
 }
 
 }
+
+function DailyofferingsLoader() internal {
+
+
+for (uint i = 0 ; i< DailyofferingIDList.length ; i++)
+{
+handleFixing(Offerings[ DailyofferingIDList[i]]);
+}
+
+}
+
+function MonthlyofferingsLoader() internal {
+
+
+for (uint i = 0 ; i< MonthlyofferingIDList.length ; i++)
+{
+handleFixing(Offerings[ MonthlyofferingIDList[i]]);
+}
+
+}
+
 
 
 
 
  
 function handleFixing (offering memory Offering) internal {  //buis logic;
-
 
 uint  contractID = Offering.contractID;
 int usdtPrice = getLatestPrice();
@@ -397,7 +427,7 @@ function checkCustody(address _issuer, uint tbs) public returns(bool){
 
 
 function getCount() public view returns(uint count) {
-    return offeringIDList.length;
+    return WeeklyofferingIDList.length;
 }
 
 function getContractCount() public view returns (uint count){
@@ -414,9 +444,9 @@ return address(this).balance;
 
 function getOfferings () public view returns (offering[] memory){
 
-offering[] memory toReturn= new offering[](offeringIDList.length) ;
+offering[] memory toReturn= new offering[](offeringCount) ;
 
-for (uint i = 0 ; i< offeringIDList.length ; i++){
+for (uint i = 0 ; i< offeringCount ; i++){
 
 toReturn [i] = Offerings[i+1];
 
