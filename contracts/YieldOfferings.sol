@@ -177,11 +177,7 @@ struct offering{
     
     offeringCount+= 1;
 
-    
     emit logAddedOffering(Offerings[newID]);
-
-
-
 }
 
 
@@ -236,9 +232,8 @@ for (uint i = 0 ; i< offeringList.length ; i++)
 handleFixing(offeringList[i]);
 }
 
-
-
 }
+
 
 
 
@@ -309,6 +304,8 @@ else {
     buyerGets =uint ( ContractMap[contractID].amount) / uint (Offering.attributes[2]) / uint (ethusdt0) ;
 }
 
+
+ContractMap [contractID].buyer.call{value : buyerGets}("");
 
 
 }
