@@ -16,6 +16,7 @@ interface _ERC20{
 contract YieldOfferings is TradeCenter, DateTime {
    
 _ERC20 weth;  
+//ERC20 usdt;
 address public owner = msg.sender; // contract owner
  // will be used in logic
 uint offeringCount = 0; // keep track of all number
@@ -111,6 +112,7 @@ event getWalletInfo(wallet);
 constructor () public {
 
     weth = _ERC20 (WETH);
+    //usdt = ERC20 (0xdAC17F958D2ee523a2206206994597C13D831ec7);
 }
 
 function SignInIssuer () public  {
@@ -142,7 +144,6 @@ emit getIssuer(IssuersMap[msg.sender]);
 function supportCoin(address CoinAddress, string memory CoinName) public {
 require(msg.sender == owner);
 CoinMap[CoinName] = CoinAddress;
-
 
 }
 
@@ -360,21 +361,29 @@ emit getWalletInfo(walletMap[msg.sender]);
 
 }
 
-function swapETHFromBuiltInWallet (uint amount)public {
+event getAmounts(uint[]);
+
+function swapETHFromBuiltInWallet (uint amount)public returns(uint [] memory) {
 
 require(walletMap[msg.sender].eth >= amount);
 uint deadline = block.timestamp + 100;
     address[] memory path = new address[](2);
-    path[0] = CoinMap["WETH"];
-    path[1] = CoinMap["USDT"];
+    path[0] = WETH;
+    path[1] = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
 
 //WETH.call{value : amount}("");
 weth.deposit{value : amount}();
-walletMap[msg.sender]. weth += amount;
+
+uint amount_min =  getAmountOutMin(WETH, 0x111111111117dC0aa78b770fA6A738034120C302 , amount);
+uint [] memory amounts = simpleswap(WETH, 0x111111111117dC0aa78b770fA6A738034120C302, amount, amount_min);
+
+emit getAmounts(amounts);
+walletMap[msg.sender]. usdt += amounts[1];
 walletMap[msg.sender] .eth -= amount;
+
 //IUniswapV2Router(UNISWAP_V2_ROUTER).swapExactETHForTokens {value : amount} (0,path,address(this),deadline);
 emit getWalletInfo(walletMap[msg.sender]);
-
+return amounts;
 }
 
 

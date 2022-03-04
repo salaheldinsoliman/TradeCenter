@@ -116,7 +116,7 @@ return balance;
 
 function getUSDTBalance() public view returns (uint){
 uint balance;
-balance = IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7).balanceOf(address(this));
+balance = IERC20(0x111111111117dC0aa78b770fA6A738034120C302).balanceOf(address(this));
 return balance;
     }
 
@@ -156,7 +156,7 @@ function swap(address _tokenIn, address _tokenOut, uint256 _amountIn, uint256 _a
 
 
 
-function simpleswap(address _tokenIn, address _tokenOut, uint256 _amountIn, uint256 _amountOutMin) external {
+function simpleswap(address _tokenIn, address _tokenOut, uint256 _amountIn, uint256 _amountOutMin) public returns (uint [] memory amounts){
       
     //first we need to transfer the amount in tokens from the msg.sender to this contract
     //this contract will have the amount of in tokens
@@ -185,12 +185,13 @@ function simpleswap(address _tokenIn, address _tokenOut, uint256 _amountIn, uint
         //then we will call swapExactTokensForTokens
         //for the deadline we will pass in block.timestamp
         //the deadline is the latest time the trade is valid for
-        IUniswapV2Router(UNISWAP_V2_ROUTER).swapExactTokensForTokens(_amountIn, _amountOutMin, path,address(this) , block.timestamp);
+       amounts =  IUniswapV2Router(UNISWAP_V2_ROUTER).swapExactTokensForTokens(_amountIn, _amountOutMin, path,address(this) , block.timestamp);
+       return amounts;
     }
 
 
 
-function getAmountOutMin(address _tokenIn, address _tokenOut, uint256 _amountIn) external view returns (uint256) {
+function getAmountOutMin(address _tokenIn, address _tokenOut, uint256 _amountIn) public view returns (uint256) {
 
        //path is an array of addresses.
        //this path array will have 3 addresses [tokenIn, WETH, tokenOut]

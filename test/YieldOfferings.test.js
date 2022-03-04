@@ -1,3 +1,4 @@
+const { time } = require("@openzeppelin/test-helpers");
 const { assert } = require("chai");
 const YieldOfferings = artifacts.require('YieldOfferings.sol')
 
@@ -57,25 +58,39 @@ let getContracts = await yieldOfferings.getAllContracts();
 console.log(getContracts)
 console.log("==============================================================")
 
-let depositToWallet = await yieldOfferings.depositToWallet ({from : accounts[0],value:50000})
+let depositToWallet = await yieldOfferings.depositToWallet ({from : accounts[0],value:500000000})
 
 
 console.log("============================")
 let bal = await yieldOfferings.getContractETH ();
-console. log ("ether in contract:",bal.toNumber() )
+console. log ("ether in contract before:",bal.toNumber() )
 
 let balweth = await yieldOfferings.getWETHBalance()
-console.log("WETH AFTER:",balweth.toString())
+console.log("WETH in contract Before:",balweth.toString())
+
+
+let usdtBal = await yieldOfferings.getUSDTBalance()
+console.log("USDT in contract Before:",usdtBal.toString())
+
+
 
 
 
 let exchange = await yieldOfferings.swapETHFromBuiltInWallet( 1050000, {from :accounts[0] })
 
+
+
+
 let bal2 = await yieldOfferings.getContractETH ();
-console. log ("ether in contract:",bal2.toNumber() )
+console. log ("ether in contract after:",bal2.toNumber() )
 
 let balweth2 = await yieldOfferings.getWETHBalance()
 console.log("WETH AFTER:",balweth2.toString())
+
+
+let usdtBal2 = await yieldOfferings.getUSDTBalance()
+console.log("USDT in contract after:",usdtBal2.toString())
+
 
 
 //console.log(buy.toString())
