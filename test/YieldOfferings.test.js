@@ -37,9 +37,8 @@ signIn = await yieldOfferings.SignInIssuer()
       let offeringsarray = await yieldOfferings.getOfferings();
       console.log (offeringsarray)
 
-
 let buy = await yieldOfferings.buyOffering(1, {from : accounts[1],value:web3.utils.toWei("1", "ether")  });
-let buy2 = await yieldOfferings.buyOffering(2, {from : accounts[2], value:web3.utils.toWei("1", "ether") });
+let buy2 = await yieldOfferings.buyOffering(1, {from : accounts[2], value:web3.utils.toWei("1", "ether") });
 console.log("==============================================================")
 let getContracts = await yieldOfferings.getAllContracts();
 console.log(getContracts)

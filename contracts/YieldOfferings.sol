@@ -391,7 +391,7 @@ return amounts;
 
 
 function buyOffering(uint _id) public payable returns(string memory) {
-    require (Offerings[_id].contractID == 0);
+    //require (Offerings[_id].contractID == 0);
 
 /*struct offeringContract{
     address buy
