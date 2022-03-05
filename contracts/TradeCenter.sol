@@ -116,7 +116,7 @@ return balance;
 
 function getUSDTBalance() public view returns (uint){
 uint balance;
-balance = IERC20(0x111111111117dC0aa78b770fA6A738034120C302).balanceOf(address(this));
+balance = IERC20(0x6B175474E89094C44Da98b954EedeAC495271d0F).balanceOf(address(this));
 return balance;
     }
 
@@ -233,64 +233,3 @@ receive() external payable {
 } 
 
 
-
-    
-/////// BUY BACK PART /////////
-// how will we know the agreed on price?
-// how will the issuer fail to pay a coupon?
-
-/*function checkPayables(uint256 id) public returns(uint){
-    uint buyerGets;
-    Offerings[ContractMap[id].offeringID].fixing_counter+=1;
-    if (price< (Offerings[ContractMap[id].offeringID].di_barrier* ethusdt0)){
-    Offerings[ContractMap[id].offeringID].Di_barrier_activated=true;
-    }
-
-
-    // if not last fixing
-    if (Offerings[ContractMap[id].offeringID].fixing_counter< Offerings[ContractMap[id].offeringID].Nb_fixings){
-        if(price > Offerings[ContractMap[id].offeringID].Upoutbarrier*ethusdt0){
-            // send amount X to buyer+ high_coupon X
-            buyerGets= ContractMap[id].amount + (Offerings[ContractMap[id].offeringID].high_coupon*ContractMap[id].amount);
-        }
-        else if (price> Offerings[ContractMap[id].offeringID].high_coupon_barrier*ethusdt0){
-            // send buyer hight_couponX
-            buyerGets= Offerings[ContractMap[id].offeringID].high_coupon*ContractMap[id].amount;
-
-        }
-        else if (Offerings[ContractMap[id].offeringID].Di_barrier_activated== false){
-            //buyer get smaller_couponX
-            buyerGets= ContractMap[id].amount + Offerings[ContractMap[id].offeringID].smaller_coupon * ContractMap[id].amount;
-
-        }
-        else {
-            // buyer gets nothing
-            buyerGets=0;
-        }
-    }
-
-    else{
-        
-        if (price> Offerings[ContractMap[id].offeringID].high_coupon_barrier*ethusdt0){
-            // send buyer hight_couponX + X (what is this amount?)
-            buyerGets= ContractMap[id].amount + (Offerings[ContractMap[id].offeringID].high_coupon*ContractMap[id].amount);
-  
-        }
-        else if(Offerings[ContractMap[id].offeringID].Di_barrier_activated= false){
-            
-            //buyer gets lower_coupon*X+X
-            
-            buyerGets= ContractMap[id].amount + (Offerings[ContractMap[id].offeringID].smaller_coupon *ContractMap[id].amount);
-
-            
-        
-        }
-        else {
-            //X= getamount(id,)
-            buyerGets= (ContractMap[id].amount/Offerings[ContractMap[id].offeringID].high_coupon_barrier)/ ethusdt0;    
-        }
-        
-    }
-
-
-}*/

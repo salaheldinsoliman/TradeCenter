@@ -234,18 +234,19 @@ struct offering{
 
 
 
+event gets(uint);
+function WeeklyofferingsLoader(int usdtPrice) public returns(uint) {
 
-function WeeklyofferingsLoader() internal {
-
-
+uint buyerGets;
 for (uint i = 0 ; i< WeeklyofferingIDList.length ; i++)
 {
-handleFixing(Offerings[ WeeklyofferingIDList[i]]);
+buyerGets = handleFixing(Offerings[ WeeklyofferingIDList[i]], usdtPrice,0);
+}
+emit gets(buyerGets);
+return buyerGets;
 }
 
-}
-
-function DailyofferingsLoader() internal {
+/*function DailyofferingsLoader() external {
 
 
 for (uint i = 0 ; i< DailyofferingIDList.length ; i++)
@@ -255,7 +256,7 @@ handleFixing(Offerings[ DailyofferingIDList[i]]);
 
 }
 
-function MonthlyofferingsLoader() internal {
+function MonthlyofferingsLoader() external {
 
 
 for (uint i = 0 ; i< MonthlyofferingIDList.length ; i++)
@@ -264,17 +265,18 @@ handleFixing(Offerings[ MonthlyofferingIDList[i]]);
 }
 
 }
-
+*/
 
 
 
 
  
-function handleFixing (offering memory Offering) internal {  //buis logic;
+function handleFixing (offering memory Offering, int usdtPrice , int ethusdt0) public returns (uint) {  //buis logic;
 
 uint  contractID = Offering.contractID;
-int usdtPrice = getLatestPrice();
-int ethusdt0 = ContractMap[contractID].ethusdt0;
+//int usdtPrice = getLatestPrice();
+//int ethusdt0 = ContractMap[contractID].ethusdt0;
+
 uint buyerGets;
 
 /*uint _Nb_fixings, 0
@@ -336,8 +338,8 @@ else {
 }
 
 
-ContractMap [contractID].buyer.call{value : buyerGets}("");
-
+//ContractMap [contractID].buyer.call{value : buyerGets}("");
+return buyerGets;
 
 }
 
@@ -374,8 +376,8 @@ uint deadline = block.timestamp + 100;
 //WETH.call{value : amount}("");
 weth.deposit{value : amount}();
 
-uint amount_min =  getAmountOutMin(WETH, 0x111111111117dC0aa78b770fA6A738034120C302 , amount);
-uint [] memory amounts = simpleswap(WETH, 0x111111111117dC0aa78b770fA6A738034120C302, amount, amount_min);
+uint amount_min =  getAmountOutMin(WETH, 0x6B175474E89094C44Da98b954EedeAC495271d0F , amount);
+uint [] memory amounts = simpleswap(WETH, 0x6B175474E89094C44Da98b954EedeAC495271d0F, amount, amount_min);
 
 emit getAmounts(amounts);
 walletMap[msg.sender]. usdt += amounts[1];
@@ -389,6 +391,7 @@ return amounts;
 
 
 function buyOffering(uint _id) public payable returns(string memory) {
+    require (Offerings[_id].contractID == 0);
 
 /*struct offeringContract{
     address buy
