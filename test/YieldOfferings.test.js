@@ -10,12 +10,7 @@ contract("YieldOfferings", function (accounts) {
       yieldOfferings = await YieldOfferings.new();
     });
 
-    it('should deploy correctly', async () => {
-        const yieldOfferings = await YieldOfferings.new();
-        console.log(yieldOfferings.address);
-        assert(yieldOfferings.address != '');
-    });
-
+   
     it ('should add a offering', async ()=> {
 
 
@@ -31,14 +26,24 @@ signIn = await yieldOfferings.SignInIssuer()
       console.log(accounts[0])
 //function addOfferingList(string memory _name,uint[] memory input, string memory fixing_duration)
 
-      let result = await yieldOfferings.addOfferingList("offerig1", [3,3,3,3,3,3],"weekly" );
+
+/*uint _Nb_fixings,
+    uint _high_coupon,
+    uint _high_coupon_barrier,
+    uint _smaller_coupon,
+    uint _Upoutbarrier,
+    uint _di_barrier, */
+      let result = await yieldOfferings.addOfferingList("offerig1", [12,30,900,3,1200,600],"weekly" );
       let result2 = await yieldOfferings.addOfferingList("offerig2", [3,3,3,3,3,3],"daily" );
 
-      let offeringsarray = await yieldOfferings.getOfferings();
-      console.log (offeringsarray)
+      
+      //console.log (offeringsarray)
 
-let buy = await yieldOfferings.buyOffering(1, {from : accounts[1],value:web3.utils.toWei("1", "ether")  });
-let buy2 = await yieldOfferings.buyOffering(1, {from : accounts[2], value:web3.utils.toWei("1", "ether") });
+let buy = await yieldOfferings.buyOffering(1, {from : accounts[1],value:web3.utils.toWei("1", "ether") });
+let buy2 = await yieldOfferings.buyOffering(2, {from : accounts[2], value:1 });
+let offeringsarray = await yieldOfferings.getOfferings();
+console.log (offeringsarray)
+
 console.log("==============================================================")
 let getContracts = await yieldOfferings.getAllContracts();
 console.log(getContracts)
@@ -78,7 +83,10 @@ let usdtBal2 = await yieldOfferings.getUSDTBalance()
 console.log("USDT in contract after:",web3.utils.fromWei(usdtBal2))
 
 
-
+//First Path
+let first_try = await yieldOfferings.WeeklyofferingsLoader(2200,2500) //SUCCSESS
+let second_try = await yieldOfferings.WeeklyofferingsLoader(2300,2500) //SUCCESS
+let third_try = await yieldOfferings.WeeklyofferingsLoader(2600,2500) //SUCCESS
 //console.log(buy.toString())
 //await yieldOfferings.events.getContract();
 

@@ -234,15 +234,14 @@ struct offering{
 
 
 
-event gets(uint);
-function WeeklyofferingsLoader(int usdtPrice) public returns(uint) {
+function WeeklyofferingsLoader(int usdtPrice, int ethusdt0) public returns(uint) {
 
 uint buyerGets;
 for (uint i = 0 ; i< WeeklyofferingIDList.length ; i++)
 {
-buyerGets = handleFixing(Offerings[ WeeklyofferingIDList[i]], usdtPrice,0);
+buyerGets = handleFixing(Offerings[ WeeklyofferingIDList[i]], usdtPrice, ethusdt0);
 }
-emit gets(buyerGets);
+//emit gets(buyerGets);
 return buyerGets;
 }
 
@@ -270,14 +269,17 @@ handleFixing(Offerings[ MonthlyofferingIDList[i]]);
 
 
 
- 
+event gets(int, string);
+event uintgetter (uint , string);
 function handleFixing (offering memory Offering, int usdtPrice , int ethusdt0) public returns (uint) {  //buis logic;
 
+emit logAddedOffering(Offering);
 uint  contractID = Offering.contractID;
+emit uintgetter(contractID, "ContractID");
 //int usdtPrice = getLatestPrice();
 //int ethusdt0 = ContractMap[contractID].ethusdt0;
 
-uint buyerGets;
+
 
 /*uint _Nb_fixings, 0
     uint _high_coupon,1
@@ -285,41 +287,63 @@ uint buyerGets;
     uint _smaller_coupon,3
     uint _Upoutbarrier,4
     uint _di_barrier, 5*/
+uint buyerGets ;
+   
 if (Offering.attributes[0] > Offering.fixing_counter){//normal fixing logic
 
-  if (usdtPrice < int((int(Offering.attributes[5])* ethusdt0))){
+  
+  buyerGets = 0;
+  
+int cond = int((int(Offering.attributes[5])* ethusdt0 /1000 ));  
+emit gets(cond, "Condition 1");
+  if (usdtPrice < int((int(Offering.attributes[5])* ethusdt0 /1000 ))){
     Offering.Di_barrier_activated=true;
     }
 
 
-if(usdtPrice > int (int (Offering.attributes[4])*ethusdt0)){
+
+
+cond = int (int (Offering.attributes[4])*ethusdt0 /1000) ; 
+emit gets(cond, "Condition 2 ");
+if(usdtPrice > int (int (Offering.attributes[4])*ethusdt0 /1000)){
+            
             
                 buyerGets = ContractMap[contractID].amount + Offering.attributes[1]*ContractMap[contractID].amount;
+                emit uintgetter(buyerGets, "Condition 2 buyerGets");
                 EndContract( contractID );
 
         }
 
-else if (usdtPrice > int (Offering.attributes[2]) * ethusdt0){
 
-buyerGets = ContractMap[contractID].amount * Offering.attributes[1];
+
+cond = int (Offering.attributes[2]) * ethusdt0 / 1000;
+emit gets(cond , "Cond 3");
+
+ if (usdtPrice > int (Offering.attributes[2]) * ethusdt0 / 1000){
+
+buyerGets = ContractMap[contractID].amount * Offering.attributes[1]/1000;
+emit uintgetter(buyerGets, "Cond 3 BuyerGets");
 
 }
 
-else if (Offering.Di_barrier_activated==false){
-    buyerGets = ContractMap[contractID].amount * Offering.attributes[3];
+
+
+ else if (Offering.Di_barrier_activated==false){
+     emit uintgetter(Offering.attributes[3], "Attributes[3]");
+     emit uintgetter(ContractMap[contractID].amount, "ammount");
+    buyerGets = ContractMap[contractID].amount * Offering.attributes[3]/1000 ;
+    emit uintgetter(buyerGets , "Cond 4 BuyerGets");
 }
 
-else {
-    buyerGets = 0;
-}
 
+emit uintgetter(buyerGets , "Final BuyerGets");
 //inside normal fixings
 }
 
 
 else {
 
-if (usdtPrice >int (int ( Offering.attributes[2]) * ethusdt0)){
+if (usdtPrice >int (int ( Offering.attributes[2]) * ethusdt0 /1000)){
 
 buyerGets = Offering. attributes[1] * ContractMap[contractID].amount + ContractMap[contractID].amount;
 
@@ -337,9 +361,8 @@ else {
     buyerGets =uint ( ContractMap[contractID].amount) / uint (Offering.attributes[2]) / uint (ethusdt0) ;
 }
 
-
 //ContractMap [contractID].buyer.call{value : buyerGets}("");
-return buyerGets;
+return 0;
 
 }
 
