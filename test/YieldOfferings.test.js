@@ -84,9 +84,12 @@ console.log("USDT in contract after:",web3.utils.fromWei(usdtBal2))
 
 
 //First Path
-let first_try = await yieldOfferings.WeeklyofferingsLoader(2200,2500) //SUCCSESS
-let second_try = await yieldOfferings.WeeklyofferingsLoader(2300,2500) //SUCCESS
-let third_try = await yieldOfferings.WeeklyofferingsLoader(2600,2500) //SUCCESS
+//let first_try = await yieldOfferings.WeeklyofferingsLoader(2200,2500) //SUCCSESS
+//let second_try = await yieldOfferings.WeeklyofferingsLoader(2300,2500) //SUCCESS
+//let third_try = await yieldOfferings.WeeklyofferingsLoader(2600,2500) //SUCCESS
+//let fourth_try = await yieldOfferings.WeeklyofferingsLoader(1550,2500) //SUCCESS
+//let fifth_try = await yieldOfferings.WeeklyofferingsLoader(1450,2500) //SUCCESS
+let sixth_try = await yieldOfferings.WeeklyofferingsLoader(1800,2500) //SUCCESS
 //console.log(buy.toString())
 //await yieldOfferings.events.getContract();
 
